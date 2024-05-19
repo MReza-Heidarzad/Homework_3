@@ -5,10 +5,10 @@ from mininet.cli import CLI
 from mininet.log import setLogLevel, info
 
 def create_network():
-    net = Mininet(controller=RemoteController, link=TCLink, switch=OVSKernelSwitch)
+    net = Mininet(link=TCLink, switch=OVSKernelSwitch)
 
-    info("*** Adding controller\n")
-    net.addController('c0', controller=RemoteController, ip='127.0.0.1', port=6653)
+    #info("*** Adding controller ***\n")
+    #net.addController('c0', controller=RemoteController, ip='127.0.0.1', port=6653)
 
     info("*** Adding Hosts _ Pink Slice ***\n")
     H1 = net.addHost('H1', ip='10.0.0.1/24')
@@ -58,30 +58,6 @@ def create_network():
     net.start()
 
     info("*** Adding flow rules to Swith 4 to block traffic between pink slice and blue slice ***\n")
-
-    Block_Rules = [
-        ('10.0.0.1', '10.0.0.3'),
-        ('10.0.0.1', '10.0.0.4'),
-        ('10.0.0.2', '10.0.0.3'),
-        ('10.0.0.2', '10.0.0.4'),
-        ('10.0.0.5', '10.0.0.7'),
-        ('10.0.0.5', '10.0.0.8'),
-        ('10.0.0.6', '10.0.0.7'),
-        ('10.0.0.6', '10.0.0.8'),
-        ('10.0.0.7', '10.0.0.1'),
-        ('10.0.0.7', '10.0.0.2'),
-        ('10.0.0.8', '10.0.0.1'),
-        ('10.0.0.8', '10.0.0.2'),
-        ('10.0.0.5', '10.0.0.3'),
-        ('10.0.0.5', '10.0.0.4'),
-        ('10.0.0.6', '10.0.0.3'),
-        ('10.0.0.6', '10.0.0.4')
-    ]
-    
-    for Source, Destination in Block_Rules:
-        S4.cmd(f'ovs-ofctl add-flow S4 priority=10,ip,nw_src={Source},nw_dst={Destination},actions=drop')
-        S4.cmd(f'ovs-ofctl add-flow S4 priority=10,ip,nw_src={Destination},nw_dst={Source},actions=drop')
-
 
     info("*** Running CLI ***\n")
     CLI(net)
